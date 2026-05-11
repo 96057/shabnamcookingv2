@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="description" content="Chef Shabnam - Bespoke private culinary experiences.">
     <title>Shabnam | Bespoke Gastronomy</title>
+    
+    <link rel="icon" type="image/png" href="S.png">
 
     <style>
         @font-face {
@@ -23,7 +25,7 @@
         }
 
         html {
-            scroll-behavior: auto; /* Required for our custom high-perf scroll logic */
+            scroll-behavior: auto; /* Required for custom high-perf scroll logic */
         }
 
         body {
@@ -321,7 +323,6 @@
     const body = document.body;
     const sections = document.querySelectorAll('section');
 
-    // --- STAR GENERATOR ---
     function createStars() {
         const count = 120; 
         for (let i = 0; i < count; i++) {
@@ -337,7 +338,6 @@
         }
     }
 
-    // --- OPTIMIZED SMOOTH SCROLL ---
     function scrollToStart() {
         const target = document.getElementById('start');
         const targetPos = target.getBoundingClientRect().top + window.pageYOffset;
@@ -365,13 +365,11 @@
         requestAnimationFrame(animation);
     }
 
-    // --- PARALLAX ENGINE ---
     function updateElements() {
         const scrollY = window.scrollY;
         const vh = window.innerHeight;
         let progress = Math.max(0, Math.min(1, scrollY / (vh * 1.8)));
 
-        // 3D Scaling/Blur Logic
         const tZ = (progress * 1500).toFixed(2);
         const tOpacity = (1 - (progress * 2.5)).toFixed(3);
         const tBlur = (progress * 12).toFixed(2);
@@ -387,7 +385,6 @@
 
         starfield.style.opacity = Math.max(0, 1 - (progress * 1.8));
 
-        // Background Progression
         if (progress > 0.85) {
             body.style.background = "var(--bg-cream)";
         } else if (progress > 0.3) {
@@ -396,14 +393,12 @@
             body.style.background = "var(--deep-forest)";
         }
 
-        // Section Reveal logic
         sections.forEach(sec => {
             const rect = sec.getBoundingClientRect();
             if (rect.top < vh * 0.9) sec.classList.add('visible');
         });
     }
 
-    // --- INITIALIZATION & EVENT LISTENERS ---
     let isTicking = false;
     window.addEventListener('scroll', () => {
         if (!isTicking) {
