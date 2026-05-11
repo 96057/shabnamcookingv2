@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Chef Shabnam - Bespoke private culinary experiences.">
+    <title>Shabnam | Bespoke Gastronomy</title>
+
+    <style>
+        @font-face {
+            font-family: 'Ahsing';
+            src: url('fonts/ahsing.otf') format('opentype');
+            font-display: swap;
+        }
+
+        :root {
+            --bg-cream: #f7f8f0;
+            --dark-green: #41553d;
+            --light-green: #84b179;
+            --deep-forest: #0d120d;
+            --gold: #c5a059;
+            --gold-muted: rgba(197, 160, 89, 0.2);
+        }
+
+        html {
+            scroll-behavior: auto; /* Required for our custom high-perf scroll logic */
+        }
+
+        body {
+            margin: 0;
+            background: var(--deep-forest);
+            font-family: 'ArchivoBlack', -apple-system, sans-serif;
+            color: var(--bg-cream);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            transition: background 1s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* --- STABILIZER: Prevents font-jumping on reload --- */
+        .fonts-loading #title-layer, 
+        .fonts-loading .concierge-link,
+        .fonts-loading #nav-layer { 
+            opacity: 0 !important; 
+            visibility: hidden;
+        }
+
+        #title-layer, .concierge-link, #nav-layer { 
+            transition: opacity 1.2s ease, visibility 1.2s ease; 
+        }
+
+        /* --- STARFIELD --- */
+        #starfield {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+        }
+
+        .texture-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://www.transparenttextures.com/patterns/black-paper.png');
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* --- SCROLLYTELLING ELEMENTS --- */
+        .scroll-wrapper { height: 300vh; contain: paint; }
+
+        .sticky-container {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1200px;
+        }
+
+        .layer {
+            position: absolute;
+            will-change: transform, opacity;
+            text-align: center;
+            pointer-events: none;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            z-index: 2;
+        }
+
+        #title-layer h1 {
+            font-family: 'Ahsing', serif;
+            font-size: clamp(70px, 22vw, 400px);
+            color: var(--light-green);
+            margin: 0;
+            letter-spacing: -0.04em;
+            line-height: 0.8;
+            filter: drop-shadow(0 20px 50px rgba(0,0,0,0.3));
+        }
+
+        .subtitle {
+            letter-spacing: clamp(10px, 2.5vw, 20px);
+            margin-bottom: 25px;
+            font-size: clamp(0.55rem, 1vw, 0.7rem);
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+
+        #nav-layer { z-index: 50; pointer-events: auto; width: 100%; }
+
+        .btn-luxe {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--bg-cream);
+            border: 1px solid var(--gold-muted);
+            padding: 22px 60px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            cursor: pointer;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            outline: none;
+        }
+
+        .btn-luxe:hover {
+            background: var(--gold);
+            color: var(--deep-forest);
+            letter-spacing: 9px;
+            border-color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            position: relative;
+            background: var(--bg-cream);
+            color: var(--dark-green);
+            z-index: 100;
+            padding: 15vh 10vw;
+            border-radius: clamp(60px, 10vw, 120px) clamp(60px, 10vw, 120px) 0 0;
+            box-shadow: 0 -30px 100px rgba(0,0,0,0.2);
+        }
+
+        section {
+            max-width: 900px;
+            margin: 0 auto 180px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        section.visible { opacity: 1; transform: translateY(0); }
+
+        .section-label {
+            font-size: 9px;
+            letter-spacing: 5px;
+            color: var(--gold);
+            margin-bottom: 30px;
+            display: block;
+            font-weight: bold;
+        }
+
+        h2 { 
+            font-size: clamp(2.5rem, 8vw, 6rem); 
+            line-height: 0.9; 
+            margin: 0 0 40px 0;
+            font-family: 'Ahsing', serif;
+        }
+
+        .luxe-p {
+            font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+            line-height: 1.7;
+            max-width: 650px;
+            opacity: 0.85;
+        }
+
+        /* --- CONTACT LINKS --- */
+        .concierge-link {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            z-index: 200;
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: var(--gold);
+            text-decoration: none;
+            mix-blend-mode: difference;
+            font-weight: bold;
+        }
+
+        .contact-group {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        .email-reveal, .insta-reveal {
+            font-size: clamp(1.4rem, 4vw, 3rem);
+            color: var(--dark-green);
+            text-decoration: none;
+            font-family: 'Ahsing', serif;
+            border-bottom: 1px solid var(--gold-muted);
+            padding-bottom: 5px;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            display: inline-block;
+            position: relative;
+        }
+
+        .insta-reveal::before {
+            content: 'INSTAGRAM //';
+            position: absolute;
+            top: -20px;
+            left: 0;
+            font-family: 'ArchivoBlack', sans-serif;
+            font-size: 8px;
+            letter-spacing: 4px;
+            color: var(--gold);
+            opacity: 0.8;
+        }
+
+        .email-reveal:hover, .insta-reveal:hover { 
+            color: var(--gold); 
+            border-bottom-color: var(--gold);
+            transform: translateX(10px);
+        }
+
+        footer {
+            background: var(--deep-forest);
+            padding: 100px 10vw;
+            color: rgba(247, 248, 240, 0.2);
+            font-size: 8px;
+            letter-spacing: 6px;
+            text-align: center;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 50px;
+            background: linear-gradient(to bottom, var(--gold), transparent);
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .main-content { padding: 10vh 8vw; }
+            .scroll-wrapper { height: 250vh; }
+        }
+    </style>
+</head>
+<body class="fonts-loading">
+
+<div class="texture-overlay"></div>
+<div id="starfield"></div>
+
+<a href="#" class="concierge-link">DIGITAL CONCIERGE</a>
+
+<div class="scroll-wrapper">
+    <div class="sticky-container">
+        <div id="title-layer" class="layer">
+            <p class="subtitle">An Infinite Palate</p>
+            <h1>SHABNAM</h1>
+        </div>
+
+        <div id="nav-layer" class="layer">
+            <nav style="margin-top: 55vh;">
+                <button class="btn-luxe" onclick="scrollToStart()">Enter Atelier</button>
+            </nav>
+        </div>
+
+        <div class="scroll-indicator"></div>
+    </div>
+</div>
+
+<div class="main-content" id="start">
+    <section id="philosophy">
+        <span class="section-label">01 // PHILOSOPHY</span>
+        <h2>Curated <br>Gastronomy.</h2>
+        <p class="luxe-p">Transforming your private residence into a sanctuary of taste. Chef Shabnam crafts sensory narratives through rare ingredients and masterful technique.</p>
+    </section>
+
+    <section id="contact">
+        <span class="section-label">02 // INQUIRY</span>
+        <h2>Establish <br>Contact.</h2>
+        <p class="luxe-p" style="margin-bottom: 60px;">For residency inquiries or bespoke dining experiences.</p>
+        
+        <div class="contact-group">
+            <a href="mailto:info@shabnampersonalchef.com" class="email-reveal">info@shabnampersonalchef.com</a>
+            <a href="https://instagram.com/shabnam__personalchef" target="_blank" class="insta-reveal">@shabnam__personalchef</a>
+        </div>
+    </section>
+</div>
+
+<footer>
+    SHABNAM PERSONAL CHEF &copy; 2026 // BY APPOINTMENT ONLY
+</footer>
+
+<script>
+    const title = document.getElementById('title-layer');
+    const nav = document.getElementById('nav-layer');
+    const starfield = document.getElementById('starfield');
+    const body = document.body;
+    const sections = document.querySelectorAll('section');
+
+    // --- STAR GENERATOR ---
+    function createStars() {
+        const count = 120; 
+        for (let i = 0; i < count; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 2 + 0.5;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+            starfield.appendChild(star);
+        }
+    }
+
+    // --- OPTIMIZED SMOOTH SCROLL ---
+    function scrollToStart() {
+        const target = document.getElementById('start');
+        const targetPos = target.getBoundingClientRect().top + window.pageYOffset;
+        const startPos = window.pageYOffset;
+        const distance = targetPos - startPos;
+        let startTime = null;
+
+        function animation(currentTime) {
+            if (startTime === null) startTime = currentTime;
+            const timeElapsed = currentTime - startTime;
+            const duration = 1200;
+
+            const ease = (t, b, c, d) => {
+                t /= d / 2;
+                if (t < 1) return c / 2 * t * t + b;
+                t--;
+                return -c / 2 * (t * (t - 2) - 1) + b;
+            };
+
+            const run = ease(timeElapsed, startPos, distance, duration);
+            window.scrollTo(0, run);
+
+            if (timeElapsed < duration) requestAnimationFrame(animation);
+        }
+        requestAnimationFrame(animation);
+    }
+
+    // --- PARALLAX ENGINE ---
+    function updateElements() {
+        const scrollY = window.scrollY;
+        const vh = window.innerHeight;
+        let progress = Math.max(0, Math.min(1, scrollY / (vh * 1.8)));
+
+        // 3D Scaling/Blur Logic
+        const tZ = (progress * 1500).toFixed(2);
+        const tOpacity = (1 - (progress * 2.5)).toFixed(3);
+        const tBlur = (progress * 12).toFixed(2);
+        
+        title.style.transform = `translate3d(0, 0, ${tZ}px)`;
+        title.style.opacity = tOpacity;
+        title.style.filter = `blur(${tBlur}px)`;
+
+        const nZ = (progress * 2000).toFixed(2);
+        const nOpacity = (1 - (progress * 4)).toFixed(3);
+        nav.style.transform = `translate3d(0, 0, ${nZ}px)`;
+        nav.style.opacity = nOpacity;
+
+        starfield.style.opacity = Math.max(0, 1 - (progress * 1.8));
+
+        // Background Progression
+        if (progress > 0.85) {
+            body.style.background = "var(--bg-cream)";
+        } else if (progress > 0.3) {
+            body.style.background = "var(--dark-green)";
+        } else {
+            body.style.background = "var(--deep-forest)";
+        }
+
+        // Section Reveal logic
+        sections.forEach(sec => {
+            const rect = sec.getBoundingClientRect();
+            if (rect.top < vh * 0.9) sec.classList.add('visible');
+        });
+    }
+
+    // --- INITIALIZATION & EVENT LISTENERS ---
+    let isTicking = false;
+    window.addEventListener('scroll', () => {
+        if (!isTicking) {
+            window.requestAnimationFrame(() => {
+                updateElements();
+                isTicking = false;
+            });
+            isTicking = true;
+        }
+    }, { passive: true });
+
+    document.fonts.ready.then(() => {
+        setTimeout(() => {
+            body.classList.remove('fonts-loading');
+            if (starfield.children.length === 0) createStars();
+            updateElements();
+        }, 100);
+    });
+
+    window.addEventListener('load', () => {
+        if (starfield.children.length === 0) createStars();
+        updateElements();
+    });
+</script>
+
+</body>
+</html>
