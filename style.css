@@ -1,0 +1,109 @@
+@font-face {
+    font-family: 'Ahsing';
+    src: url('./fonts/ahsing.otf') format('opentype');
+    font-display: swap;
+}
+
+:root {
+    --bg-cream: #e6e4d9;
+    --dark-green: #41553d;
+    --light-green: #84b179;
+    --deep-forest: #0d120d;
+    --gold: #c5a059;
+    --gold-muted: rgba(197, 160, 89, 0.2);
+}
+
+html { scroll-behavior: auto; overflow-x: hidden; }
+
+body {
+    margin: 0; background: var(--deep-forest);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--bg-cream); overflow-x: hidden; -webkit-font-smoothing: antialiased;
+    transition: background 1s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.8s ease;
+    opacity: 0; 
+}
+
+body.ready { opacity: 1; }
+
+/* Effects */
+#starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+.star { position: absolute; background: white; border-radius: 50%; opacity: 0; animation: twinkle var(--duration) infinite ease-in-out; }
+@keyframes twinkle { 0%, 100% { opacity: 0.1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.2); } }
+
+.texture-overlay { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background-image: url('https://www.transparenttextures.com/patterns/black-paper.png'); 
+    opacity: 0.04; pointer-events: none; z-index: 9999; 
+}
+
+/* Hero */
+.scroll-wrapper { height: 300vh; contain: paint; }
+.sticky-container { position: sticky; top: 0; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; perspective: 1200px; }
+.layer { position: absolute; will-change: transform, opacity; text-align: center; pointer-events: none; z-index: 2; }
+#title-layer h1 { font-family: 'Ahsing', serif; font-size: clamp(70px, 18vw, 320px); color: var(--light-green); margin: 0; line-height: 0.8; }
+.subtitle { letter-spacing: clamp(10px, 2.5vw, 20px); margin-bottom: 25px; font-size: clamp(0.55rem, 1vw, 0.7rem); color: var(--gold); text-transform: uppercase; }
+
+.btn-luxe {
+    background: rgba(255, 255, 255, 0.03); color: var(--bg-cream); border: 1px solid var(--gold-muted);
+    padding: 22px 60px; font-size: 10px; text-transform: uppercase; letter-spacing: 6px; cursor: pointer;
+    backdrop-filter: blur(15px); transition: all 0.5s ease; pointer-events: auto;
+}
+.btn-luxe:hover { background: var(--gold); color: var(--deep-forest); letter-spacing: 9px; }
+
+/* Content Layout */
+.main-content {
+    position: relative; background: var(--bg-cream); color: var(--dark-green);
+    z-index: 100; padding: 15vh 10vw; border-radius: 80px 80px 0 0;
+}
+
+.main-content::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200" fill="none" stroke="%2341553d" stroke-width="0.5" stroke-dasharray="10 10"><path d="M400,0 Q600,300 200,600 T400,1200" /></svg>');
+    background-size: 100% auto; opacity: 0.1; z-index: 1; pointer-events: none;
+}
+
+/* Museum Matte Logic */
+.museum-matte {
+    background: #ffffff; padding: clamp(10px, 2.5vw, 25px); border: 1px solid var(--gold-muted);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.08); transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-block; width: 100%; box-sizing: border-box; text-align: center; position: relative;
+}
+
+/* Hover only on Desktop */
+@media (hover: hover) {
+    .museum-matte:hover { transform: translateY(-15px) rotate(0.5deg); }
+}
+
+.portrait-img { width: 100%; height: auto; max-height: 75vh; object-fit: contain; border-radius: 180px 180px 20px 20px; }
+.arch-top { border-radius: 200px 200px 30px 30px; max-width: 420px; }
+
+.editorial-gallery { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: clamp(20px, 5vw, 80px); align-items: start; margin-top: 80px; }
+.gallery-item img { width: 100%; height: auto; max-height: 650px; object-fit: contain; }
+.item-large .museum-matte { border-radius: 40px 120px 40px 120px; }
+.item-large img { border-radius: 30px 110px 30px 110px; }
+.item-small { margin-top: 15vh; }
+.item-small .museum-matte { border-radius: 120px 40px 120px 40px; }
+.item-small img { border-radius: 110px 30px 110px 30px; }
+
+/* Contact Interaction */
+.contact-group { display: flex; flex-direction: column; gap: 30px; position: relative; z-index: 10; }
+.mini-matte { 
+    width: fit-content; padding: 18px 45px; border-radius: 60px; cursor: pointer; 
+    background: #fff; border: 1px solid var(--gold-muted); overflow: hidden;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mini-matte:hover { transform: translateX(12px); border-color: var(--gold); }
+.link-reveal { font-family: 'Ahsing', serif; font-size: clamp(1.2rem, 3.5vw, 2.4rem); color: var(--dark-green); text-decoration: none; transition: 0.4s; pointer-events: auto; }
+.copy-status { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 10px; letter-spacing: 3px; color: var(--gold); opacity: 0; pointer-events: none; transition: 0.4s; text-transform: uppercase; width: 100%; }
+.mini-matte.copied .link-reveal { opacity: 0.05; filter: blur(8px); }
+.mini-matte.copied .copy-status { opacity: 1; }
+
+section { position: relative; max-width: 1200px; margin: 0 auto 200px; opacity: 0; transform: translateY(50px); transition: 1.2s ease; z-index: 5; }
+section.visible { opacity: 1; transform: translateY(0); }
+.section-label { font-size: 10px; letter-spacing: 6px; color: var(--gold); font-weight: bold; margin-bottom: 40px; display: block; }
+h2 { font-family: 'Ahsing', serif; font-size: clamp(3rem, 9vw, 7rem); line-height: 0.85; margin: 0 0 50px 0; }
+.luxe-p { font-size: clamp(1.1rem, 2vw, 1.5rem); line-height: 1.8; opacity: 0.9; }
+
+footer { background: var(--deep-forest); padding: 100px 10vw; color: rgba(247, 248, 240, 0.1); font-size: 9px; text-align: center; letter-spacing: 8px; }
+
+@media (max-width: 900px) { .editorial-gallery { grid-template-columns: 1fr; gap: 40px; } .item-small { margin-top: 0; } .mini-matte { width: 100%; text-align: center; } .main-content { padding: 10vh 7vw; } }
