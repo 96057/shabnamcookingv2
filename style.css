@@ -9,8 +9,8 @@
     --dark-green: #41553d;
     --light-green: #84b179;
     --deep-forest: #0d120d;
-    --gold: #c5a059;
-    --gold-muted: rgba(197, 160, 89, 0.2);
+    --gold: #b38b45; /* Deepened for contrast compliance */
+    --gold-muted: rgba(179, 139, 69, 0.2);
 }
 
 html { scroll-behavior: auto; overflow-x: hidden; }
@@ -58,7 +58,7 @@ body.ready { opacity: 1; }
 
 .main-content::before {
     content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200" fill="none" stroke="%2341553d" stroke-width="0.5" stroke-dasharray="10 10"><path d="M400,0 Q600,300 200,600 T400,1200" /></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200" fill="none" stroke="%2341553d" stroke-width="0.3" stroke-dasharray="10 10"><path d="M400,0 Q600,300 200,600 T400,1200" /></svg>');
     background-size: 100% auto; opacity: 0.1; z-index: 1; pointer-events: none;
 }
 
